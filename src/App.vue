@@ -68,7 +68,7 @@ const profileData = ref({
     {
       title: 'Mega Town Online',
       description: 'E-commerce platform for five M Server in frontend role',
-      url: 'https://your-weather-app.com',
+      url: 'https://megatown.online/',
       tech: ['Next.js', 'MariaDb', 'chakraui']
     },
     {
