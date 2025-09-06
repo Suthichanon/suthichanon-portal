@@ -355,7 +355,7 @@ const profileData = ref({
                 <div class="mt-6 pt-6 border-t border-slate-700/50 flex justify-between text-sm text-gray-500">
                   <span class="flex items-center gap-1">
                     <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    Frontend
+                    Frontend/Fullstack
                   </span>
                   <span class="flex items-center gap-1">
                     <div class="w-2 h-2 bg-green-400 rounded-full"></div>
