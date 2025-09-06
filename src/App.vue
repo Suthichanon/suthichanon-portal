@@ -26,17 +26,63 @@ const copyEmail = async () => {
   }
 }
 
-// Scroll animations
+// Scroll animations with enhanced effects - bidirectional
 onMounted(() => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('animate-fade-in-up')
+        // Element เข้ามาในหน้าจอ - เล่นอนิเมชั่น
+        if (entry.target.classList.contains('scroll-animate-links')) {
+          entry.target.classList.remove('animate-fade-out-right')
+          entry.target.classList.add('animate-fade-in-left')
+        } else if (entry.target.classList.contains('scroll-animate-projects')) {
+          entry.target.classList.remove('animate-slide-down-stagger')
+          entry.target.classList.add('animate-slide-up-stagger')
+          // Add staggered animation to project cards
+          const cards = entry.target.querySelectorAll('.project-card')
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.remove('animate-slide-down')
+              card.classList.add('animate-slide-up')
+            }, index * 150)
+          })
+        } else if (entry.target.classList.contains('scroll-animate-contact')) {
+          entry.target.classList.remove('animate-zoom-out')
+          entry.target.classList.add('animate-zoom-in')
+        } else {
+          entry.target.classList.remove('animate-fade-out-down')
+          entry.target.classList.add('animate-fade-in-up')
+        }
+      } else {
+        // Element ออกจากหน้าจอ - เล่นอนิเมชั่นย้อนกลับ
+        if (entry.target.classList.contains('scroll-animate-links')) {
+          entry.target.classList.remove('animate-fade-in-left')
+          entry.target.classList.add('animate-fade-out-right')
+        } else if (entry.target.classList.contains('scroll-animate-projects')) {
+          entry.target.classList.remove('animate-slide-up-stagger')
+          entry.target.classList.add('animate-slide-down-stagger')
+          const cards = entry.target.querySelectorAll('.project-card')
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.remove('animate-slide-up')
+              card.classList.add('animate-slide-down')
+            }, index * 100)
+          })
+        } else if (entry.target.classList.contains('scroll-animate-contact')) {
+          entry.target.classList.remove('animate-zoom-in')
+          entry.target.classList.add('animate-zoom-out')
+        } else {
+          entry.target.classList.remove('animate-fade-in-up')
+          entry.target.classList.add('animate-fade-out-down')
+        }
       }
     })
+  }, {
+    threshold: 0.2,
+    rootMargin: '0px 0px -10px 0px'
   })
 
-  const elements = document.querySelectorAll('.scroll-animate')
+  const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-links, .scroll-animate-projects, .scroll-animate-contact')
   elements.forEach((el) => observer.observe(el))
 })// Portfolio data
 const profileData = ref({
@@ -81,7 +127,7 @@ const profileData = ref({
       title: 'Five M UI',
       description: 'Create a five m ui based on figma.',
       url: 'https://www.figma.com/design/tIkmYIRcThiYC8pEAJL0Al/HUD---%7C-BUBBLE-TOWN-%7C?node-id=14011-1904&p=f',
-      tech: ['Next.js', 'Firebase', 'chakraui']
+      tech: ['vue.js', 'tailwind']
     }
   ]
 })
@@ -124,120 +170,47 @@ const profileData = ref({
     <!-- Code Pattern Background -->
     <div class="absolute inset-0 bg-code-pattern opacity-5"></div>
 
-    <!-- Header with Enhanced Design -->
-    <header class="py-16 px-4 relative z-10">
-      <div class="max-w-5xl mx-auto text-center">
-        <div class="relative inline-block mb-8">
-          <!-- Profile image with enhanced effects -->
-          <div class="relative">
+    <!-- Header with Professional Design -->
+    <header class="py-24 px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Profile Image Section -->
+        <div class="relative inline-block mb-12">
+          <div class="relative group">
+            <!-- Subtle background glow -->
             <div
-              class="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-lg opacity-30 animate-pulse-slow">
+              class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-2xl scale-110 opacity-60 group-hover:opacity-80 transition-opacity duration-700">
             </div>
+
+            <!-- Main profile image -->
             <img :src="profileData.avatar" :alt="profileData.name"
-              class="relative w-72 h-72 rounded-full mx-auto border-4 border-cyan-400/50 shadow-2xl shadow-cyan-500/25 hover:shadow-cyan-500/50 transition-all duration-700 hover:scale-110 hover:rotate-3 object-cover">
+              class="relative w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full mx-auto border-2 border-white/10 shadow-2xl shadow-black/50 hover:shadow-blue-500/20 transition-all duration-500 hover:scale-105 object-cover backdrop-blur-sm">
+
+            <!-- Minimal status indicator -->
+            <div
+              class="absolute bottom-4 right-4 w-6 h-6 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full border-3 border-slate-900 shadow-lg">
+              <div class="absolute inset-1 bg-white/90 rounded-full animate-pulse"></div>
+            </div>
           </div>
-          <!-- Status indicator with animation -->
-          <div
-            class="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full border-4 border-slate-900 animate-pulse shadow-lg shadow-green-500/30">
-            <div class="absolute inset-2 bg-white rounded-full animate-ping"></div>
-          </div>
-          <!-- Skill badges floating around profile -->
-          <div
-            class="absolute -top-8 left-12 bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-mono text-blue-300 animate-float">
-            Vue.js</div>
-          <div
-            class="absolute top-8 -right-16 bg-green-500/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-mono text-green-300 animate-float animation-delay-2000">
-            TypeScript</div>
-          <div
-            class="absolute -bottom-8 left-8 bg-purple-500/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-mono text-purple-300 animate-float animation-delay-4000">
-            React</div>
         </div>
-        <div class="space-y-6">
-          <!-- Enhanced name with better typography -->
+
+        <!-- Name Section -->
+        <div class="space-y-8">
           <div class="relative">
             <h1
-              class="text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x leading-tight tracking-tight">
+              class="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent leading-tight tracking-tight">
               {{ profileData.name }}
             </h1>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 opacity-20 blur-xl -z-10 animate-pulse-slow">
-            </div>
           </div>
 
-          <!-- Enhanced title with code brackets -->
-          <div class="flex items-center justify-center gap-6 text-2xl text-cyan-300">
-            <div
-              class="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-xl backdrop-blur-sm border border-slate-700/50">
-              <span class="animate-bounce text-cyan-400 text-3xl">&lt;</span>
-              <span class="font-mono bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">{{
-                profileData.title }}</span>
-              <span class="animate-bounce animation-delay-1000 text-cyan-400 text-3xl">/&gt;</span>
-            </div>
+          <!-- Simplified title -->
+          <div class="text-xl md:text-2xl text-blue-200/80 font-light tracking-wide">
+            {{ profileData.title }}
           </div>
 
-          <!-- Enhanced bio -->
-          <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light">{{ profileData.bio }}</p>
-
-          <!-- Enhanced Terminal/Code Block -->
-          <div
-            class="mt-8 font-mono text-sm text-green-400 bg-slate-900/80 backdrop-blur-sm rounded-2xl p-6 max-w-lg mx-auto border border-slate-700/50 shadow-2xl shadow-slate-900/50">
-            <!-- Terminal header -->
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors cursor-pointer"></div>
-                <div class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors cursor-pointer">
-                </div>
-                <div class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors cursor-pointer">
-                </div>
-              </div>
-              <span class="text-xs text-gray-500">~/portfolio</span>
-            </div>
-
-            <!-- Code content with typing effect -->
-            <div class="text-left space-y-2">
-              <div class="flex items-center gap-2">
-                <span class="text-blue-400">const</span>
-                <span class="text-yellow-400">developer</span>
-                <span class="text-white">=</span>
-                <span class="text-green-400">{</span>
-              </div>
-              <div class="pl-4 space-y-1">
-                <div><span class="text-red-400">name:</span> <span class="text-green-400">"{{ profileData.name
-                }}"</span>,</div>
-                <div><span class="text-red-400">role:</span> <span class="text-green-400">"Frontend Developer"</span>,
-                </div>
-                <div><span class="text-red-400">skills:</span> <span class="text-green-400">["Vue", "React",
-                    "TypeScript"]</span>,</div>
-                <div><span class="text-red-400">passion:</span> <span class="text-green-400">"Creative UI/UX"</span>
-                  <div><span class="text-red-400">Email:</span> <span
-                      class="text-green-400">"suthichanon@gmail.com"</span>
-                  </div>
-                  <div><span class="text-red-400">Tel:</span> <span class="text-green-400">"0932015589"</span>
-                  </div>
-                </div>
-              </div>
-              <span class="text-green-400">}</span>
-            </div>
-
-            <!-- Cursor blink -->
-
-          </div>
-
-          <!-- Quick stats -->
-          <div class="flex justify-center gap-8 mt-8">
-            <div class="text-center">
-              <div class="text-3xl font-bold text-cyan-400 animate-count-up">5+</div>
-              <div class="text-sm text-gray-400 uppercase tracking-wide">Projects</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-green-400 animate-count-up">1+</div>
-              <div class="text-sm text-gray-400 uppercase tracking-wide">Years Exp</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-purple-400 animate-count-up">10+</div>
-              <div class="text-sm text-gray-400 uppercase tracking-wide">Technologies</div>
-            </div>
-          </div>
+          <!-- Clean bio -->
+          <p class="text-lg text-gray-300/90 max-w-2xl mx-auto leading-relaxed font-light">
+            {{ profileData.bio }}
+          </p>
         </div>
       </div>
     </header>
@@ -247,7 +220,7 @@ const profileData = ref({
       <div class="max-w-6xl mx-auto">
 
         <!-- Quick Links Section -->
-        <section class="mb-20">
+        <section class="mb-20 scroll-animate-links">
           <div class="text-center mb-12">
             <h2
               class="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -286,7 +259,7 @@ const profileData = ref({
 
 
         <!-- Projects Section with Enhanced Design -->
-        <section class="mb-24 scroll-animate">
+        <section class="mb-24 scroll-animate-projects">
           <div class="text-center mb-16">
             <div class="inline-flex items-center gap-3 mb-6">
               <div
@@ -299,7 +272,7 @@ const profileData = ref({
             </div>
             <h2
               class="text-5xl font-bold mb-6 bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              Featured Projects
+              Projects
             </h2>
             <div class="w-32 h-1.5 bg-gradient-to-r from-green-400 to-blue-500 mx-auto rounded-full mb-4"></div>
             <p class="text-gray-400 text-xl max-w-2xl mx-auto">Showcasing my expertise in modern web development</p>
@@ -307,7 +280,7 @@ const profileData = ref({
 
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             <div v-for="(project, index) in profileData.projects" :key="project.title"
-              class="group relative bg-slate-800/40 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-700 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/20 overflow-hidden"
+              class="project-card group relative bg-slate-800/40 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-700 hover:scale-105 hover:shadow-2xl hover:shadow-green-500/20 overflow-hidden"
               :style="{ animationDelay: index * 150 + 'ms' }">
 
               <!-- Enhanced glow effect -->
@@ -411,7 +384,7 @@ const profileData = ref({
         </section>
 
         <!-- Contact Section -->
-        <section class="text-center relative">
+        <section class="text-center relative scroll-animate-contact">
           <div class="mb-12">
             <h2 class="text-4xl font-bold mb-4 bg-gradient-to-r from-pink-400 to-red-500 bg-clip-text text-transparent">
               Let's Connect
@@ -559,6 +532,54 @@ const profileData = ref({
   }
 }
 
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slide-up-stagger {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes slide-in-right {
   from {
     opacity: 0;
@@ -568,18 +589,6 @@ const profileData = ref({
   to {
     opacity: 1;
     transform: translateX(0);
-  }
-}
-
-@keyframes pulse-slow {
-
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 0.8;
   }
 }
 
@@ -609,12 +618,45 @@ const profileData = ref({
   animation: gradient-x 3s ease infinite;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
-}
 
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.animate-fade-in-left {
+  animation: fade-in-left 0.8s ease-out forwards;
+}
+
+.animate-fade-out-right {
+  animation: fade-out-right 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.6s ease-out forwards;
+}
+
+.animate-slide-up-stagger {
+  animation: slide-up-stagger 0.6s ease-out forwards;
+}
+
+.animate-slide-down-stagger {
+  animation: slide-down-stagger 0.6s ease-out forwards;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.8s ease-out forwards;
+}
+
+.animate-zoom-out {
+  animation: zoom-out 0.6s ease-out forwards;
+}
+
+.animate-fade-out-down {
+  animation: fade-out-down 0.6s ease-out forwards;
 }
 
 .animate-slide-in-right {
@@ -691,15 +733,39 @@ section {
   animation: slideInUp 0.6s ease-out forwards;
 }
 
-.scroll-animate {
+.scroll-animate,
+.scroll-animate-links,
+.scroll-animate-projects,
+.scroll-animate-contact {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.6s ease-out;
 }
 
-.scroll-animate.animate-fade-in-up {
+.scroll-animate-links {
+  transform: translateX(-50px);
+}
+
+.scroll-animate-projects {
+  transform: translateY(40px);
+}
+
+.scroll-animate-contact {
+  transform: scale(0.8);
+}
+
+.project-card {
+  opacity: 0;
+  transform: translateY(60px) scale(0.95);
+  transition: all 0.8s ease-out;
+}
+
+.scroll-animate.animate-fade-in-up,
+.scroll-animate-links.animate-fade-in-left,
+.scroll-animate-projects.animate-slide-up-stagger,
+.scroll-animate-contact.animate-zoom-in {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateX(0) scale(1);
 }
 
 /* Enhanced button effects */
@@ -731,8 +797,13 @@ a:focus {
 .group,
 .group-tech,
 .group-link,
-.group-github {
-  will-change: transform;
+.group-github,
+.scroll-animate,
+.scroll-animate-links,
+.scroll-animate-projects,
+.scroll-animate-contact,
+.project-card {
+  will-change: transform, opacity;
 }
 
 /* Mobile optimizations */
